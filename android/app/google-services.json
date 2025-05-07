@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "128198181189",
+    "project_id": "eventmanagement-ec3fe",
+    "storage_bucket": "eventmanagement-ec3fe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128198181189:android:1751f08151fcc6bdda7e2c",
+        "android_client_info": {
+          "package_name": "com.example.event_management_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC79Tc2fJSBR8cSTyaIHepwbcAVSMl6zK4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
