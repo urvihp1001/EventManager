@@ -6,7 +6,7 @@ void main() async {
  {
 await Firebase.initializeApp(
   options: FirebaseOptions(
-    apiKey: 'AIzaSyC79Tc2fJSBR8cSTyaIHepwbcAVSMl6zK4',
+    apiKey: 'APIKEY',
     appId: '1:128198181189:android:1751f08151fcc6bdda7e2c',
     messagingSenderId: '',
     projectId: 'eventmanagement-ec3fe',
