@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:event_management_app/pages/auth_screen.dart';
 import 'package:event_management_app/pages/eventlistscreen.dart';
 import 'package:event_management_app/providers/auth_provider.dart';
@@ -6,12 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+   await dotenv.load();
+
  {
 await Firebase.initializeApp(
   options: FirebaseOptions(
-    apiKey: 'AIzaSyC79Tc2fJSBR8cSTyaIHepwbcAVSMl6zK4',
+    apiKey: dotenv.env['APIKEY']! ,
     appId: '1:128198181189:android:1751f08151fcc6bdda7e2c',
     messagingSenderId: '',
     projectId: 'eventmanagement-ec3fe',
