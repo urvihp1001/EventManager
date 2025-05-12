@@ -1,98 +1,132 @@
-import 'package:event_management_app/pages/auth_screen.dart';
-import 'package:event_management_app/providers/auth_provider.dart';
+import 'package:event_management_app/components/AddEventDialog.dart';
+import 'package:event_management_app/providers/event_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 
-class EventListScreen extends StatelessWidget {
-  const EventListScreen({super.key});
+class EventListScreen extends StatefulWidget {
+  @override
+  State<EventListScreen> createState() => _EventListScreenState();
+}
+
+class _EventListScreenState extends State<EventListScreen> {
+  String? userId;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        setState(() {
+          userId = user.uid;
+        });
+        Provider.of<EventProvider>(context, listen: false).fetchEvents(user.uid);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Simulated event data for the list
-    final events = [
-      Event(id: '1', title: 'Flutter Workshop', description: 'A workshop on Flutter development', date: DateTime.now().add(Duration(days: 1)), rsvpCount: 10),
-      Event(id: '2', title: 'Dart Meetup', description: 'A meetup for Dart developers', date: DateTime.now().add(Duration(days: 2)), rsvpCount: 5),
-      Event(id: '3', title: 'Firebase Conference', description: 'Firebase Conference for developers', date: DateTime.now().add(Duration(days: 3)), rsvpCount: 2),
-    ];
+    final provider = Provider.of<EventProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Upcoming Events'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () {
-              // Sign out the user when they click the logout button
-              Provider.of<EventAuthProvider>(context, listen: false).signOut();
-              Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const AuthScreen()),
-      );
-            },
-          ),
-        ],
-      ),
-      body: ListView.builder(
-        itemCount: events.length,
-        itemBuilder: (context, index) {
-          final event = events[index];
-          return EventCard(event: event);
-        },
-      ),
-    );
-  }
-}
-
-class EventCard extends StatelessWidget {
-  final Event event;
-
-  const EventCard({super.key, required this.event});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(event.title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 5),
-            Text(event.description),
-            SizedBox(height: 10),
-            Text('Date: ${event.date.toLocal()}'),
-            SizedBox(height: 10),
-            Text('RSVP Count: ${event.rsvpCount}'),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                // Handle RSVP action
-                // This is where you would integrate Firebase to update RSVP status
-                print('RSVP clicked for event: ${event.title}');
+      appBar: AppBar(title: Text('Events'), actions: [
+    IconButton(
+      icon: Icon(Icons.logout),
+      tooltip: 'Sign out',
+      onPressed: () async {
+        await FirebaseAuth.instance.signOut();
+        // Optionally, navigate to your login screen or pop to root
+        Navigator.of(context).pushReplacementNamed('auth_screen');
+      },
+    ),
+  ],),
+      body: provider.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : provider.events.isEmpty
+              ? Center(child: Text('No events found.'))
+              : ListView.builder(
+                  itemCount: provider.events.length,
+                  itemBuilder: (context, index) {
+                    final event = provider.events[index];
+                    return Card(
+                      margin: EdgeInsets.all(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Event info
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(event.title, style: Theme.of(context).textTheme.labelMedium),
+                                  SizedBox(height: 4),
+                                  Text(event.description),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    event.date.toLocal().toString().split(' ')[0],
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // RSVP and Delete buttons
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('RSVP: ${event.totalRsvpCount}'),
+                                IconButton(
+                                  icon: Icon(
+                                    event.rsvpStatus
+                                        ? Icons.check_box
+                                        : Icons.check_box_outline_blank,
+                                    color: event.rsvpStatus ? Colors.green : null,
+                                  ),
+                                  onPressed: userId == null
+                                      ? null
+                                      : () {
+                                          provider.toggleRsvp(userId!, event);
+                                        },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.delete, color: Colors.red),
+                                  onPressed: userId == null
+                                      ? null
+                                      : () {
+                                          provider.deleteEvent(event.id, userId!);
+                                        },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: userId == null
+            ? null
+            : () async {
+                final result = await showDialog<Map<String, dynamic>>(
+                  context: context,
+                  builder: (context) => AddEventDialog(),
+                );
+                if (result != null) {
+                  provider.addEvent(
+                    title: result['title'],
+                    description: result['description'],
+                    date: result['date'],
+                    userId: userId!,
+                  );
+                }
               },
-              child: Text('RSVP'),
-            ),
-          ],
-        ),
       ),
     );
   }
-}
-
-class Event {
-  final String id;
-  final String title;
-  final String description;
-  final DateTime date;
-  final int rsvpCount;
-
-  Event({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.date,
-    required this.rsvpCount,
-  });
 }
