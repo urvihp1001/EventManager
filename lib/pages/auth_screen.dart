@@ -35,7 +35,7 @@ class _AuthScreenState extends State<AuthScreen> {
       // If the user is logged in successfully, navigate to the EventListScreen
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const EventListScreen()),
+        MaterialPageRoute(builder: (_) => EventListScreen()),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

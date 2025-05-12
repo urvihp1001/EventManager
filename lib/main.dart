@@ -1,3 +1,4 @@
+import 'package:event_management_app/providers/event_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:event_management_app/pages/auth_screen.dart';
 import 'package:event_management_app/pages/eventlistscreen.dart';
@@ -9,19 +10,23 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   await dotenv.load();
+    try {
+    await dotenv.load(fileName: ".env"); // Load environment variables
+  } catch (e) {
+    throw Exception('Error loading .env file: $e'); // Print error if any
+  }
 
- {
+ 
 await Firebase.initializeApp(
   options: FirebaseOptions(
-    apiKey: dotenv.env['APIKEY']! ,
+    apiKey: dotenv.env['APIKEY']!,
     appId: '1:128198181189:android:1751f08151fcc6bdda7e2c',
     messagingSenderId: '',
     projectId: 'eventmanagement-ec3fe',
     storageBucket: 'eventmanagement-ec3fe.firebasestorage.app',
   )
 );
-  }
+  
   runApp(const MyApp());
 }
 
@@ -33,6 +38,7 @@ class MyApp extends StatelessWidget{
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => EventAuthProvider()),
+        ChangeNotifierProvider(create: (_)=>EventProvider())
       ],
       child: MaterialApp(
         title: 'Event App',
@@ -48,7 +54,7 @@ class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    return user == null ? const AuthScreen() : const EventListScreen();
+    return user == null ? const AuthScreen() :  EventListScreen();
   }
 
 }
