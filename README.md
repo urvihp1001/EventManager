@@ -1,16 +1,24 @@
-# event_management_app
+# Event Management App
+## Testing the app
+Click on Create new account for a new user
+Register: Enter an email and a password containing more than 6 characters on the apt text-inputs. 
+It will lead you to a screen of event list
 
-A new Flutter project.
+Login:
+Enter your email and password of registration-click on login- you will be lead to Event List Screen
 
-## Getting Started
+Logout:
+There is an icon to press on the event list screen, it will log you out and lead you to login screen
 
-This project is a starting point for a Flutter application.
+## RSVP
+plus icon- enter details to create new event
+it shows up as a card on the list of events
+to rsvp, there is a checkbox which when clicked updates the number of rsvp's 
+to delete an event, there is a delete icon 
+## Session persistence
+- Flutter secure storage is storing the Firebase user token for each user
+- I have made use of an AuthWrapper that checks if user is already logged in in previous session and accordingly shows a login screen or event list.
+- This is done through Firebase auth
+- To test, dont logout and close app
+- open app again and you will be on event list screen
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
