@@ -17,9 +17,7 @@ class Event {
     this.totalRsvpCount=0,
   });
 
-  void toggleRsvpStatus() {
-    rsvpStatus = !rsvpStatus;
-  }
+ 
 
   factory Event.fromFirestore(
     Map<String, dynamic> data,
@@ -36,12 +34,5 @@ class Event {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'title': title,
-      'description': description,
-      'date': date,
-      'totalRsvpCount': totalRsvpCount,
-    };
-  }
+
 }
