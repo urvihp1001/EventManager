@@ -40,7 +40,7 @@ class EventProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Add this method
+
   Future<void> addEvent({
     required String title,
     required String description,
@@ -109,5 +109,4 @@ class EventProvider with ChangeNotifier {
 
   notifyListeners();
 }
-
 }

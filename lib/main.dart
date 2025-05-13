@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget{
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => EventAuthProvider()),
+        ChangeNotifierProvider(create: (_) => EventAuthProvider()),//helps update data within widget 
         ChangeNotifierProvider(create: (_)=>EventProvider())
       ],
       child: MaterialApp(

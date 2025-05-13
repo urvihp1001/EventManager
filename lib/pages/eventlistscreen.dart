@@ -38,7 +38,7 @@ class _EventListScreenState extends State<EventListScreen> {
       tooltip: 'Sign out',
       onPressed: () async {
         await FirebaseAuth.instance.signOut();
-        // Optionally, navigate to your login screen or pop to root
+        
         Navigator.of(context).pushReplacementNamed('auth_screen');
       },
     ),

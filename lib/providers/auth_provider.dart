@@ -9,16 +9,10 @@ class EventAuthProvider with ChangeNotifier {
 
   EventAuthProvider() {
     _user = _auth.currentUser;
-    if (_user != null) {
-      _storage.write(key: 'uid', value: _user!.uid);
-    }
+    _updateStorage(_user);
     _auth.authStateChanges().listen((user) {
       _user = user;
-      if (user != null) {
-        _storage.write(key: 'uid', value: user.uid);
-      } else {
-        _storage.delete(key: 'uid');
-      }
+      _updateStorage(user);
       notifyListeners();
     });
   }
@@ -28,27 +22,31 @@ class EventAuthProvider with ChangeNotifier {
   Future<void> signUp(String email, String password) async {
     final result = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
-    _user = result.user;
-    await _storage.write(key: 'uid', value: _user?.uid);
-    notifyListeners();
+    _setUser(result.user);
   }
 
   Future<void> signIn(String email, String password) async {
     final result = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
-    _user = result.user;
-    await _storage.write(key: 'uid', value: _user?.uid);
-    notifyListeners();
+    _setUser(result.user);
   }
 
   Future<void> signOut() async {
     await _auth.signOut();
-    _user = null;
-    await _storage.delete(key: 'uid');
+    _setUser(null);
+  }
+
+  void _setUser(User? user) async {
+    _user = user;
+    await _updateStorage(user);
     notifyListeners();
   }
 
-  Future<String?> getStoredUid() async {
-    return await _storage.read(key: 'uid');
+  Future<void> _updateStorage(User? user) async {
+    if (user != null) {
+      await _storage.write(key: 'uid', value: user.uid);
+    } else {
+      await _storage.delete(key: 'uid');
+    }
   }
 }
