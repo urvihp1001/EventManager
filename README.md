@@ -3,7 +3,7 @@
 ### Prerequisites
 
 - Flutter SDK
-- Firebase Project (Web, Android, iOS enabled)
+- Firebase Project (Android Enabled)
 - Firebase Authentication and Firestore enabled
 
 ### 1. Clone the Repository
@@ -87,26 +87,55 @@ eventProvider.addEvent( title: result['title'],
                     date: result['date'],
                     userId: userId!,);
 ```
-## Testing the app
-Click on Create new account for a new user
-Register: Enter an email and a password containing more than 6 characters on the apt text-inputs. 
-It will lead you to a screen of event list
 
-Login:
-Enter your email and password of registration-click on login- you will be lead to Event List Screen
+### Testing the App
 
-Logout:
-There is an icon to press on the event list screen, it will log you out and lead you to login screen
+#### Registration
 
-### RSVP
-- plus icon- enter details to create new event
-- it shows up as a card on the list of events
-- to rsvp, there is a checkbox which when clicked updates the number of rsvp's 
-- to delete an event, there is a delete icon 
-### Session persistence
-- Flutter secure storage is storing the Firebase user token for each user
-- I have made use of an AuthWrapper that checks if user is already logged in in previous session and accordingly shows a login screen or event list.
-- This is done through Firebase auth
-- To test, dont logout and close app
-- open app again and you will be on event list screen
+- **Create New Account:**  
+  Click on **Create New Account** to register as a new user.  
+  Enter a valid email address and a password (minimum 6 characters) in the provided fields.  
+  Upon successful registration, you will be navigated to the Event List screen.
+
+#### Login
+
+- **Sign In:**  
+  Enter your registered email and password, then click **Login**.  
+  Successful authentication will take you directly to the Event List screen.
+
+#### Logout
+
+- **Sign Out:**  
+  On the Event List screen, tap the logout icon in the app bar.  
+  This will sign you out and redirect you back to the Login screen.
+
+### Event Management & RSVP
+
+- **Create Event:**  
+  Tap the **plus (+) icon** to open the event creation dialog.  
+  Enter the event details and submit; the new event will appear as a card in the event list.
+
+- **RSVP to Event:**  
+  Each event card includes an RSVP checkbox.  
+  Tapping the checkbox updates the RSVP count for that event in real time.
+
+- **Delete Event:**  
+  Each event card has a delete icon.  
+  Tap it to remove the event from the list.
+
+### Session Persistence
+
+- **Automatic Login:**  
+  User sessions are persisted using Flutter Secure Storage, which securely stores the Firebase user token.
+- **AuthWrapper:**  
+  On app launch, the `AuthWrapper` checks if a user session exists:
+    - If the user is already authenticated, the app navigates directly to the Event List screen.
+    - If not, the Login screen is displayed.
+- **Powered by Firebase Auth:**  
+  All authentication and session management is handled via Firebase Authentication.
+
+
+To test session persistence, log in and close the app without logging out. Reopen the app, and you will be taken directly to the Event List screen.
+
+
 
