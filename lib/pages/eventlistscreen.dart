@@ -1,4 +1,5 @@
 import 'package:event_management_app/components/AddEventDialog.dart';
+import 'package:event_management_app/pages/auth_screen.dart';
 import 'package:event_management_app/providers/event_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,10 @@ class _EventListScreenState extends State<EventListScreen> {
       onPressed: () async {
         await FirebaseAuth.instance.signOut();
         
-        Navigator.of(context).pushReplacementNamed('auth_screen');
+         Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => AuthScreen()),
+      );
       },
     ),
   ],),
