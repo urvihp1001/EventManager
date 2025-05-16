@@ -109,4 +109,39 @@ class EventProvider with ChangeNotifier {
 
   notifyListeners();
 }
+Future<void> fetchRsvpEvents(String userId) async {
+  _isLoading = true;
+  notifyListeners();
+
+  try {
+    // 1. Get the user's RSVP document
+    final rsvpDoc = await _firestore.collection('rsvps').doc(userId).get();
+    final rsvpData = rsvpDoc.data() ?? {};
+
+    // 2. Get the list of event IDs where RSVP is true
+    final rsvpEventIds = rsvpData.entries
+        .where((entry) => entry.value == true)
+        .map((entry) => entry.key)
+        .toList();
+
+    // 3. Fetch those events from the events collection
+    if (rsvpEventIds.isNotEmpty) {
+      final eventsSnapshot = await _firestore
+          .collection('events')
+          .where(FieldPath.documentId, whereIn: rsvpEventIds)
+          .get();
+
+      _events = eventsSnapshot.docs.map((doc) =>
+          Event.fromFirestore(doc.data(), doc.id, rsvpStatus: true)).toList();
+    } else {
+      _events = [];
+    }
+  } catch (e) {
+    // handle error
+  }
+
+  _isLoading = false;
+  notifyListeners();
+}
+
 }
