@@ -1,10 +1,10 @@
 import 'package:event_management_app/components/AddEventDialog.dart';
 import 'package:event_management_app/pages/auth_screen.dart';
+import 'package:event_management_app/pages/rsvpscreen.dart';
 import 'package:event_management_app/providers/event_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 
 class EventListScreen extends StatefulWidget {
   @override
@@ -33,20 +33,32 @@ class _EventListScreenState extends State<EventListScreen> {
     final provider = Provider.of<EventProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text('Events'), actions: [
-    IconButton(
-      icon: Icon(Icons.logout),
-      tooltip: 'Sign out',
-      onPressed: () async {
-        await FirebaseAuth.instance.signOut();
-        
-         Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => AuthScreen()),
-      );
-      },
-    ),
-  ],),
+      appBar: AppBar(
+        title: Text('Events'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.event_available),
+            tooltip: 'My RSVP Events',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RsvpEventsScreen()),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.logout),
+            tooltip: 'Sign out',
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => AuthScreen()),
+              );
+            },
+          ),
+        ],
+      ),
       body: provider.isLoading
           ? Center(child: CircularProgressIndicator())
           : provider.events.isEmpty
